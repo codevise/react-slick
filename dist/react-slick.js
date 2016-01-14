@@ -1534,8 +1534,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Credit: http://stackoverflow.com/a/13735425/1849458
 	    var dots = Array.apply(null, Array(dotCount + 1).join('0').split('')).map(function (x, i) {
 
-	      console.log('i', i, _this.props);
-
 	      var className = (0, _classnames2['default'])({
 	        'slick-active': _this.props.currentSlide === i * _this.props.slidesToScroll,
 	        'slick-displayed': _this.isDisplayed(i, dotCount)
