@@ -383,6 +383,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    if (this.props.dots === true && this.state.slideCount >= this.props.slidesToShow) {
 	      var dotProps = {
+	        infinite: this.props.infinite,
+	        centerMode: this.props.centerMode,
 	        dotsClass: this.props.dotsClass,
 	        slideCount: this.state.slideCount,
 	        slidesToShow: this.props.slidesToShow,
@@ -1761,6 +1763,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    e.preventDefault();
 	    this.props.clickHandler(options);
 	  },
+	  isDisplayed: function isDisplayed(i, dotCount) {
+	    var currentSlide = this.props.currentSlide,
+	        slidesToShow = this.props.slidesToShow,
+	        slidesToScroll = this.props.slidesToScroll;
+
+	    var displayAllDotSlides = slidesToShow % slidesToScroll === 0;
+
+	    if (this.props.centerMode || this.props.infinite || dotCount == slidesToShow || !displayAllDotSlides) {
+	      return currentSlide === i * slidesToScroll;
+	    }
+
+	    var dotSlidesDisplayeds = i >= currentSlide && i < currentSlide + slidesToShow,
+	        dotSlidesBetweenDisplayeds = i >= dotCount - slidesToShow && currentSlide >= dotCount - slidesToShow;
+
+	    return dotSlidesDisplayeds || dotSlidesBetweenDisplayeds;
+	  },
 	  render: function render() {
 	    var _this = this;
 
@@ -1777,7 +1795,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var leftBound = i * _this.props.slidesToScroll;
 	      var rightBound = i * _this.props.slidesToScroll + (_this.props.slidesToScroll - 1);
 	      var className = (0, _classnames2.default)({
-	        'slick-active': _this.props.currentSlide >= leftBound && _this.props.currentSlide <= rightBound
+	        'slick-active': _this.props.currentSlide >= leftBound && _this.props.currentSlide <= rightBound,
+	        'slick-displayed': _this.isDisplayed(i, dotCount)
 	      });
 
 	      var dotOptions = {
