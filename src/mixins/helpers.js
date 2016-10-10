@@ -121,7 +121,7 @@ var helpers = {
       if(this.props.infinite === false &&
         (index < 0 || index >= this.state.slideCount)) {
         return;
-      } 
+      }
 
       //  Shifting targetSlide back into the range
       if (index < 0) {
@@ -177,6 +177,8 @@ var helpers = {
         currentSlide = this.state.slideCount - this.props.slidesToShow;
       } else if (this.state.slideCount % this.props.slidesToScroll !== 0) {
         currentSlide = 0;
+      } else if (this.props.infinite === false && targetSlide >= (this.state.slideCount - this.props.slidesToShow)) {
+        currentSlide = this.state.slideCount - this.props.slidesToShow;
       } else {
         currentSlide = targetSlide - this.state.slideCount;
       }
