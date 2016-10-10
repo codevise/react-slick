@@ -107,7 +107,9 @@ export var InnerSlider = React.createClass({
     // animating state should be cleared while resizing, otherwise autoplay stops working
     this.setState({
       animating: false
-    })
+    });
+    clearTimeout(this.animationEndCallback);
+    delete this.animationEndCallback;
   },
   slickPrev: function () {
     this.changeSlide({message: 'previous'});
@@ -157,7 +159,9 @@ export var InnerSlider = React.createClass({
         slidesToShow: this.props.slidesToShow,
         currentSlide: this.state.currentSlide,
         slidesToScroll: this.props.slidesToScroll,
-        clickHandler: this.changeSlide
+        clickHandler: this.changeSlide,
+        children: this.props.children,
+        customPaging: this.props.customPaging
       };
 
       dots = (<Dots {...dotProps} />);
