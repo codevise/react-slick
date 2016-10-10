@@ -1288,6 +1288,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        currentSlide = this.state.slideCount - this.props.slidesToShow;
 	      } else if (this.state.slideCount % this.props.slidesToScroll !== 0) {
 	        currentSlide = 0;
+	      } else if (this.props.infinite === false && targetSlide >= this.state.slideCount - this.props.slidesToShow) {
+	        currentSlide = this.state.slideCount - this.props.slidesToShow;
 	      } else {
 	        currentSlide = targetSlide - this.state.slideCount;
 	      }
