@@ -10,7 +10,7 @@ var checkSpecKeys = function (spec, keysArray) {
 
 export var getTrackCSS = function(spec) {
   checkSpecKeys(spec, [
-    'left', 'variableWidth', 'slideCount', 'slidesToShow', 'slideWidth'
+    'left', 'variableWidth', 'slideCount', 'slideSpacing', 'slidesToShow', 'slideWidth'
   ]);
 
   var trackWidth, trackHeight;
@@ -60,7 +60,7 @@ export var getTrackCSS = function(spec) {
 
 export var getTrackAnimateCSS = function (spec) {
   checkSpecKeys(spec, [
-    'left', 'variableWidth', 'slideCount', 'slidesToShow', 'slideWidth', 'speed', 'cssEase'
+    'left', 'variableWidth', 'slideCount', 'slideSpacing', 'slidesToShow', 'slideWidth', 'speed', 'cssEase'
   ]);
 
   var style = getTrackCSS(spec);
@@ -73,7 +73,7 @@ export var getTrackAnimateCSS = function (spec) {
 export var getTrackLeft = function (spec) {
 
   checkSpecKeys(spec, [
-   'slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideCount', 'slidesToShow',
+   'slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideSpacing', 'slideCount', 'slidesToShow',
    'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
 
   var slideOffset = 0;
@@ -102,7 +102,6 @@ export var getTrackLeft = function (spec) {
       }
     }
   } else {
-
     if (spec.slideCount % spec.slidesToScroll !== 0) {
       if (spec.slideIndex + spec.slidesToScroll > spec.slideCount && spec.slideCount > spec.slidesToShow) {
           var slidesToOffset = spec.slidesToShow - (spec.slideCount % spec.slidesToScroll);
@@ -122,6 +121,8 @@ export var getTrackLeft = function (spec) {
   }
 
   if (!spec.vertical) {
+    slideOffset -= (spec.slideIndex * spec.slideSpacing);
+
     targetLeft = ((spec.slideIndex * spec.slideWidth) * -1) + slideOffset;
   } else {
     targetLeft = ((spec.slideIndex * spec.slideHeight) * -1) + verticalOffset;

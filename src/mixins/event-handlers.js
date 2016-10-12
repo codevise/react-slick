@@ -38,10 +38,12 @@ var EventHandlers = {
         return;
       }
     }
+    if (targetSlide > (slideCount - slidesToShow)) {
+      targetSlide = (slideCount - slidesToShow);
+    }
 
     this.slideHandler(targetSlide);
   },
- 
   // Accessiblity handler for previous and next
   keyHandler: function (e) {
     //Dont slide if the cursor is inside the form fields and arrow keys are pressed

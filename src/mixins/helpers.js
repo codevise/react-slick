@@ -12,13 +12,15 @@ var helpers = {
     var slideCount = React.Children.count(props.children);
     var listWidth = this.getWidth(slickList);
     var trackWidth = this.getWidth(ReactDOM.findDOMNode(this.track));
+    var thisWidth = this.getWidth(ReactDOM.findDOMNode(this));
+    var slidesSpacing = parseInt(props.slideSpacing) * (props.slidesToShow-1);
     var slideWidth;
 
     if (!props.vertical) {
       var centerPaddingAdj = props.centerMode && (parseInt(props.centerPadding) * 2);
-      slideWidth = (this.getWidth(ReactDOM.findDOMNode(this)) - centerPaddingAdj)/props.slidesToShow;
+      slideWidth = (thisWidth - slidesSpacing - centerPaddingAdj) / props.slidesToShow;
     } else {
-      slideWidth = this.getWidth(ReactDOM.findDOMNode(this));
+      slideWidth = thisWidth;
     }
 
     const slideHeight = this.getHeight(slickList.querySelector('[data-index="0"]'));
@@ -202,6 +204,8 @@ var helpers = {
       } else {
         currentSlide = targetSlide - this.state.slideCount;
       }
+    } else if (targetSlide > (this.state.slideCount - this.props.slidesToShow)) {
+      currentSlide = this.state.slideCount - this.props.slidesToShow;
     } else {
       currentSlide = targetSlide;
     }

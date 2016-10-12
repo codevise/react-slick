@@ -39,6 +39,14 @@ var getSlideStyle = function (spec) {
     style.width = spec.slideWidth;
   }
 
+  if (spec.slideSpacing) {
+    if (spec.rtl) {
+      style.marginLeft = spec.slideSpacing;
+    } else {
+      style.marginRight = spec.slideSpacing;
+    }
+  }
+
   if (spec.fade) {
     style.position = 'relative';
     style.left = -spec.index * spec.slideWidth;
