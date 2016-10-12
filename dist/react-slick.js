@@ -373,6 +373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      lazyLoad: this.props.lazyLoad,
 	      lazyLoadedList: this.state.lazyLoadedList,
 	      rtl: this.props.rtl,
+	      slideSpacing: this.props.slideSpacing,
 	      slideWidth: this.state.slideWidth,
 	      slidesToShow: this.props.slidesToShow,
 	      slidesToScroll: this.props.slidesToScroll,
@@ -538,10 +539,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 	    }
+	    if (targetSlide > slideCount - slidesToShow) {
+	      targetSlide = slideCount - slidesToShow;
+	    }
 
 	    this.slideHandler(targetSlide);
 	  },
-
 	  // Accessiblity handler for previous and next
 	  keyHandler: function keyHandler(e) {
 	    //Dont slide if the cursor is inside the form fields and arrow keys are pressed
@@ -841,7 +844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	var getTrackCSS = exports.getTrackCSS = function getTrackCSS(spec) {
-	  checkSpecKeys(spec, ['left', 'variableWidth', 'slideCount', 'slidesToShow', 'slideWidth']);
+	  checkSpecKeys(spec, ['left', 'variableWidth', 'slideCount', 'slideSpacing', 'slidesToShow', 'slideWidth']);
 
 	  var trackWidth, trackHeight;
 
@@ -889,7 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	var getTrackAnimateCSS = exports.getTrackAnimateCSS = function getTrackAnimateCSS(spec) {
-	  checkSpecKeys(spec, ['left', 'variableWidth', 'slideCount', 'slidesToShow', 'slideWidth', 'speed', 'cssEase']);
+	  checkSpecKeys(spec, ['left', 'variableWidth', 'slideCount', 'slideSpacing', 'slidesToShow', 'slideWidth', 'speed', 'cssEase']);
 
 	  var style = getTrackCSS(spec);
 	  // useCSS is true by default so it can be undefined
@@ -900,7 +903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var getTrackLeft = exports.getTrackLeft = function getTrackLeft(spec) {
 
-	  checkSpecKeys(spec, ['slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideCount', 'slidesToShow', 'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
+	  checkSpecKeys(spec, ['slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideSpacing', 'slideCount', 'slidesToShow', 'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
 
 	  var slideOffset = 0;
 	  var targetLeft;
@@ -928,7 +931,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  } else {
-
 	    if (spec.slideCount % spec.slidesToScroll !== 0) {
 	      if (spec.slideIndex + spec.slidesToScroll > spec.slideCount && spec.slideCount > spec.slidesToShow) {
 	        var slidesToOffset = spec.slidesToShow - spec.slideCount % spec.slidesToScroll;
@@ -946,6 +948,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  if (!spec.vertical) {
+	    slideOffset -= spec.slideIndex * spec.slideSpacing;
+
 	    targetLeft = spec.slideIndex * spec.slideWidth * -1 + slideOffset;
 	  } else {
 	    targetLeft = spec.slideIndex * spec.slideHeight * -1 + verticalOffset;
@@ -1103,13 +1107,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var slideCount = _react2.default.Children.count(props.children);
 	    var listWidth = this.getWidth(slickList);
 	    var trackWidth = this.getWidth(_reactDom2.default.findDOMNode(this.track));
+	    var thisWidth = this.getWidth(_reactDom2.default.findDOMNode(this));
+	    var slidesSpacing = parseInt(props.slideSpacing) * (props.slidesToShow - 1);
 	    var slideWidth;
 
 	    if (!props.vertical) {
 	      var centerPaddingAdj = props.centerMode && parseInt(props.centerPadding) * 2;
-	      slideWidth = (this.getWidth(_reactDom2.default.findDOMNode(this)) - centerPaddingAdj) / props.slidesToShow;
+	      slideWidth = (thisWidth - slidesSpacing - centerPaddingAdj) / props.slidesToShow;
 	    } else {
-	      slideWidth = this.getWidth(_reactDom2.default.findDOMNode(this));
+	      slideWidth = thisWidth;
 	    }
 
 	    var slideHeight = this.getHeight(slickList.querySelector('[data-index="0"]'));
@@ -1293,6 +1299,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        currentSlide = targetSlide - this.state.slideCount;
 	      }
+	    } else if (targetSlide > this.state.slideCount - this.props.slidesToShow) {
+	      currentSlide = this.state.slideCount - this.props.slidesToShow;
 	    } else {
 	      currentSlide = targetSlide;
 	    }
@@ -1536,6 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    responsive: null,
 	    rtl: false,
 	    slide: 'div',
+	    slideSpacing: 20,
 	    slidesToShow: 1,
 	    slidesToScroll: 1,
 	    speed: 500,
@@ -1669,6 +1678,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  if (spec.variableWidth === undefined || spec.variableWidth === false) {
 	    style.width = spec.slideWidth;
+	  }
+
+	  if (spec.slideSpacing) {
+	    if (spec.rtl) {
+	      style.marginLeft = spec.slideSpacing;
+	    } else {
+	      style.marginRight = spec.slideSpacing;
+	    }
 	  }
 
 	  if (spec.fade) {
