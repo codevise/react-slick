@@ -15,8 +15,6 @@ export var getTrackCSS = function(spec) {
 
   var trackWidth, trackHeight;
 
-  const trackChildren = (spec.slideCount + 2 * spec.slidesToShow);
-
   if (!spec.vertical) {
     if (spec.variableWidth) {
       trackWidth = (spec.slideCount + 2*spec.slidesToShow) * spec.slideWidth;
@@ -25,7 +23,10 @@ export var getTrackCSS = function(spec) {
     } else {
       trackWidth = (spec.slideCount + 2*spec.slidesToShow) * spec.slideWidth;
     }
+    const spacingWidth = spec.slideSpacing * (spec.slideCount-1);
+    trackWidth += spacingWidth;
   } else {
+    const trackChildren = (spec.slideCount + 2 * spec.slidesToShow);
     trackHeight = trackChildren * spec.slideHeight;
   }
 
