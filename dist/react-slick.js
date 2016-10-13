@@ -848,8 +848,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var trackWidth, trackHeight;
 
-	  var trackChildren = spec.slideCount + 2 * spec.slidesToShow;
-
 	  if (!spec.vertical) {
 	    if (spec.variableWidth) {
 	      trackWidth = (spec.slideCount + 2 * spec.slidesToShow) * spec.slideWidth;
@@ -858,7 +856,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      trackWidth = (spec.slideCount + 2 * spec.slidesToShow) * spec.slideWidth;
 	    }
+	    var spacingWidth = spec.slideSpacing * (spec.slideCount - 1);
+	    trackWidth += spacingWidth;
 	  } else {
+	    var trackChildren = spec.slideCount + 2 * spec.slidesToShow;
 	    trackHeight = trackChildren * spec.slideHeight;
 	  }
 
@@ -1544,7 +1545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    responsive: null,
 	    rtl: false,
 	    slide: 'div',
-	    slideSpacing: 20,
+	    slideSpacing: 0,
 	    slidesToShow: 1,
 	    slidesToScroll: 1,
 	    speed: 500,
