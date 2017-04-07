@@ -447,7 +447,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return _react2.default.createElement(
 	      'div',
-	      { className: className, onMouseEnter: this.onInnerSliderEnter, onMouseLeave: this.onInnerSliderLeave },
+	      {
+	        className: className,
+	        onMouseEnter: this.onInnerSliderEnter,
+	        onMouseLeave: this.onInnerSliderLeave,
+	        onMouseOver: this.onInnerSliderOver
+	      },
 	      prevArrow,
 	      _react2.default.createElement(
 	        'div',
@@ -545,6 +550,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.slideHandler(targetSlide);
 	  },
+
 	  // Accessiblity handler for previous and next
 	  keyHandler: function keyHandler(e) {
 	    //Dont slide if the cursor is inside the form fields and arrow keys are pressed
@@ -741,7 +747,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  swipeEnd: function swipeEnd(e) {
 	    if (!this.state.dragging) {
-	      e.preventDefault();
+	      if (this.props.swipe) {
+	        e.preventDefault();
+	      }
 	      return;
 	    }
 	    var touchObject = this.state.touchObject;
@@ -805,6 +813,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  onInnerSliderEnter: function onInnerSliderEnter(e) {
+	    if (this.props.autoplay && this.props.pauseOnHover) {
+	      this.pause();
+	    }
+	  },
+	  onInnerSliderOver: function onInnerSliderOver(e) {
 	    if (this.props.autoplay && this.props.pauseOnHover) {
 	      this.pause();
 	    }
@@ -972,8 +985,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        targetSlide = _reactDom2.default.findDOMNode(spec.trackRef).children[spec.slideIndex + spec.slidesToShow + 1];
 	      }
 
-	      targetLeft = targetSlide ? targetSlide.offsetLeft * -1 : 0;
-	      targetLeft += (spec.listWidth - targetSlide.offsetWidth) / 2;
+	      if (targetSlide) {
+	        targetLeft = targetSlide.offsetLeft * -1 + (spec.listWidth - targetSlide.offsetWidth) / 2;
+	      }
 	    }
 	  }
 
@@ -1166,7 +1180,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var listHeight = slideHeight * props.slidesToShow;
 
 	    // pause slider if autoplay is set to false
-	    if (!props.autoplay) this.pause();
+	    if (props.autoplay) {
+	      this.pause();
+	    } else {
+	      this.autoPlay();
+	    }
 
 	    this.setState({
 	      slideCount: slideCount,
@@ -1188,10 +1206,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  getWidth: function getWidth(elem) {
-	    return elem.getBoundingClientRect().width || elem.offsetWidth;
+	    return elem.getBoundingClientRect().width || elem.offsetWidth || 0;
 	  },
 	  getHeight: function getHeight(elem) {
-	    return elem.getBoundingClientRect().height || elem.offsetHeight;
+	    return elem.getBoundingClientRect().height || elem.offsetHeight || 0;
 	  },
 
 	  adaptHeight: function adaptHeight() {
@@ -1431,17 +1449,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  autoPlay: function autoPlay() {
 	    if (this.state.autoPlayTimer) {
-	      return;
+	      clearTimeout(this.state.autoPlayTimer);
 	    }
 	    if (this.props.autoplay) {
 	      this.setState({
-	        autoPlayTimer: setInterval(this.play, this.props.autoplaySpeed)
+	        autoPlayTimer: setTimeout(this.play, this.props.autoplaySpeed)
 	      });
 	    }
 	  },
 	  pause: function pause() {
 	    if (this.state.autoPlayTimer) {
-	      clearInterval(this.state.autoPlayTimer);
+	      clearTimeout(this.state.autoPlayTimer);
 	      this.setState({
 	        autoPlayTimer: null
 	      });
@@ -1946,10 +1964,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      style: { display: 'block' },
 	      onClick: prevHandler
 	    };
+	    var customProps = {
+	      currentSlide: this.props.currentSlide,
+	      slideCount: this.props.slideCount
+	    };
 	    var prevArrow;
 
 	    if (this.props.prevArrow) {
-	      prevArrow = _react2.default.cloneElement(this.props.prevArrow, prevArrowProps);
+	      prevArrow = _react2.default.cloneElement(this.props.prevArrow, _extends({}, prevArrowProps, customProps));
 	    } else {
 	      prevArrow = _react2.default.createElement(
 	        'button',
@@ -1987,11 +2009,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      style: { display: 'block' },
 	      onClick: nextHandler
 	    };
-
+	    var customProps = {
+	      currentSlide: this.props.currentSlide,
+	      slideCount: this.props.slideCount
+	    };
 	    var nextArrow;
 
 	    if (this.props.nextArrow) {
-	      nextArrow = _react2.default.cloneElement(this.props.nextArrow, nextArrowProps);
+	      nextArrow = _react2.default.cloneElement(this.props.nextArrow, _extends({}, nextArrowProps, customProps));
 	    } else {
 	      nextArrow = _react2.default.createElement(
 	        'button',
