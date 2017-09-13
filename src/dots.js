@@ -17,8 +17,25 @@ export class Dots extends React.Component {
     e.preventDefault();
     this.props.clickHandler(options);
   }
-  render() {
 
+  isDisplayed(i, dotCount) {
+    var currentSlide   = this.props.currentSlide,
+        slidesToScroll = this.props.slidesToScroll,
+        slidesToShow   = this.props.slidesToShow;
+
+    var displayAllDotSlides = slidesToShow % slidesToScroll === 0;
+
+    if (this.props.centerMode || this.props.infinite || dotCount == slidesToShow || !displayAllDotSlides) {
+      return (currentSlide === i * slidesToScroll);
+    }
+
+    var dotSlidesDisplayeds = ((i >= currentSlide) && (i < (currentSlide + slidesToShow))),
+        dotSlidesBetweenDisplayeds = ((i >= (dotCount - slidesToShow)) && (currentSlide >= (dotCount - slidesToShow)));
+
+    return dotSlidesDisplayeds || dotSlidesBetweenDisplayeds;
+  }
+
+  render() {
     var dotCount = getDotCount({
       slideCount: this.props.slideCount,
       slidesToScroll: this.props.slidesToScroll
@@ -32,7 +49,8 @@ export class Dots extends React.Component {
       var leftBound = (i * this.props.slidesToScroll);
       var rightBound = (i * this.props.slidesToScroll) + (this.props.slidesToScroll - 1);
       var className = classnames({
-        'slick-active': (this.props.currentSlide >= leftBound) && (this.props.currentSlide <= rightBound)
+        'slick-active': (this.props.currentSlide >= leftBound) && (this.props.currentSlide <= rightBound),
+        'slick-displayed': this.isDisplayed(i, dotCount)
       });
 
       var dotOptions = {
