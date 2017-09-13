@@ -186,6 +186,7 @@ var helpers = {
       return;
     }
 
+    var lastFiniteSlide = this.state.slideCount - this.props.slidesToShow;
     targetSlide = index;
     if (targetSlide < 0) {
       if(this.props.infinite === false) {
@@ -203,6 +204,8 @@ var helpers = {
       } else {
         currentSlide = targetSlide - this.state.slideCount;
       }
+    } else if (!this.props.infinite && targetSlide >= lastFiniteSlide) {
+      currentSlide = lastFiniteSlide;
     } else {
       currentSlide = targetSlide;
     }
