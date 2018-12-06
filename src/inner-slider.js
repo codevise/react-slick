@@ -56,6 +56,8 @@ export var InnerSlider = createReactClass({
     this.initialize(this.props);
     this.adaptHeight();
 
+    this.addTouchEventListener();
+
     // To support server-side rendering
     if (!window) {
       return
@@ -78,9 +80,11 @@ export var InnerSlider = createReactClass({
     if (this.state.autoPlayTimer) {
       clearInterval(this.state.autoPlayTimer);
     }
+
+    this.removeTouchEventListener();
   },
   componentWillReceiveProps: function (nextProps) {
-    if (this.props.slickGoTo != nextProps.slickGoTo) {
+    if (this.props.slickGoTo !== nextProps.slickGoTo) {
       if (process.env.NODE_ENV !== 'production') {
         console.warn('react-slick deprecation warning: slickGoTo prop is deprecated and it will be removed in next release. Use slickGoTo method instead')
       }
@@ -119,7 +123,7 @@ export var InnerSlider = createReactClass({
     this.changeSlide({ message: 'next' });
   },
   slickGoTo: function (slide) {
-    slide = Number(slide)
+    slide = Number(slide);
     !isNaN(slide) && this.changeSlide({
       message: 'index',
       index: slide,
@@ -230,7 +234,6 @@ export var InnerSlider = createReactClass({
           onMouseUp={this.swipeEnd}
           onMouseLeave={this.state.dragging ? this.swipeEnd : null}
           onTouchStart={this.swipeStart}
-          onTouchMove={this.state.dragging ? this.swipeMove : null}
           onTouchEnd={this.swipeEnd}
           onTouchCancel={this.state.dragging ? this.swipeEnd : null}
           onKeyDown={this.props.accessibility ? this.keyHandler : null}>
@@ -242,5 +245,23 @@ export var InnerSlider = createReactClass({
         {dots}
       </div>
     );
+  },
+
+  addTouchEventListener: function() {
+    if (this.list) {
+      this.list.addEventListener('touchmove', this.dragMove, { passive: false });
+    }
+  },
+
+  removeTouchEventListener: function() {
+    if (this.list) {
+      this.list.removeEventListener('touchmove', this.dragMove);
+    }
+  },
+
+  dragMove: function (e) {
+    if (this.state.dragging) {
+      this.swipeMove(e);
+    }
   }
 });
